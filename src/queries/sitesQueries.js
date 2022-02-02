@@ -5,10 +5,11 @@ const getAllSitesDb = async (body) => {
         const allSites = await query(`
             SELECT *
             FROM sites
+            ORDER BY updatedAt DESC
         `);
         return allSites;
     } catch (error) {
-        return error;
+        console.error(error.message);
     }
 }
 
@@ -17,12 +18,22 @@ const addSiteDb = async (site) => {
         const addSite = await query(`
             INSERT
             INTO sites
-            SET ?`,
-            site
+            SET
+                sTitle = '${site.sTitle}',
+                sDetails = '${site.sDetails}',
+                sTestType = '${site.sTestType}',
+                sType = '${site.sType}',
+                sId = '${site.sId}',
+                lat = ${site.lat},
+                lng = ${site.lng},
+                createdAt = LOCALTIMESTAMP(),
+                updatedAt = LOCALTIMESTAMP(),
+                archived = ${site.archived}`
         );
+        console.log(addSite);
         return addSite;
     } catch (error) {
-        return error;
+        console.error(error.message);
     }
 }
 
@@ -30,28 +41,33 @@ const editSiteDb = async (site) => {
     try {
         const editSite = await query(`
             UPDATE sites
-            SET ?
-            WHERE sId = ?`,
-            [site, site.sId]
+            SET
+                sTitle = '${site.sTitle}',
+                sDetails = '${site.sDetails}',
+                sTestType = '${site.sTestType}',
+                sType = '${site.sType}',
+                updatedAt = LOCALTIMESTAMP()
+            WHERE sId = '${site.sId}'`
         );
         return editSite;
     } catch (error) {
-        return error;
+        console.error(error.message);
     }
 }
 
-const deleteSiteDb = async (site) => {
+const archiveSiteDb = async (site) => {
     try {
         const deleteSite = await query(`
-            DELETE
-            FROM sites
-            WHERE sId = ?`,
-            site.sId
+            UPDATE sites
+            SET
+                archived = ${site.archived},
+                updatedAt = LOCALTIMESTAMP()
+            WHERE sId = '${site.sId}'`
         );
         return deleteSite;
     } catch (error) {
-        return error;
+        console.error(error.message);
     }
 }
 
-module.exports = { getAllSitesDb, addSiteDb, editSiteDb, deleteSiteDb }
+module.exports = { getAllSitesDb, addSiteDb, editSiteDb, archiveSiteDb }

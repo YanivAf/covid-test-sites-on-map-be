@@ -1,7 +1,8 @@
 const express = require('express')
 const router = express.Router();
-const { performSitesQuery } = require('../controllers/sitesControllers');
+const { setSpecificQuery, performSitesQuery } = require('../controllers/sitesControllers');
 
-router.all('/', performSitesQuery);
+router.all('/', setSpecificQuery, performSitesQuery);
+router.put('/archive', setSpecificQuery, performSitesQuery);
 
 module.exports = router;
