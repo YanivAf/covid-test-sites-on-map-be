@@ -1,6 +1,6 @@
 const { query } = require('../../config/sitesDb');
 
-const getAllSitesDb = async () => {
+const getAllSitesDb = async (body) => {
     try {
         const allSites = await query(`
             SELECT *
